@@ -1,0 +1,16 @@
+# action.yml
+name: 'GSheets-to-CSV Action'
+description: 'Read google sheets into CSV files'
+inputs:
+  sheets:
+    description: 'List of sheets as a JSON string [{id, name, range}] '
+    required: true
+    default: []
+  tempdir:
+    description: 'Target directory for CSV files'
+    required: false
+    default: ${{ env.RUNNER_TEMP }}
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+

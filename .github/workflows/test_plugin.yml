@@ -1,0 +1,32 @@
+name: Test
+
+on:
+  push:
+    #branches:
+      #- main
+  pull_request:
+env:
+  id: '1ZbkUf1tAzt_Lhh1G8ezDgyU1AdUnm26xzPYLtdtWsI8'
+  name: 'temp'
+  range: 'A1:I8'
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Pull GSheet data
+        id: 'get_data'
+        uses: ./
+        with:
+          commands: |
+            [
+              { "name": "${{ env.name }}", "range": "${{ env.range }}", "name": "${{ env.name }}"}
+            ]
+        env:
+          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
