@@ -5,7 +5,7 @@ inputs:
   sheets:
     description: 'List of sheets as a JSON string [{id, name, range}] '
     required: true
-    default: []
+    default: '[]'
   tempdir:
     description: 'Target directory for CSV files'
     required: false

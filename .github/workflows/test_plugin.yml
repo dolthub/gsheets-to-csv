@@ -2,9 +2,6 @@ name: Test
 
 on:
   push:
-    #branches:
-      #- main
-  pull_request:
 env:
   id: '1ZbkUf1tAzt_Lhh1G8ezDgyU1AdUnm26xzPYLtdtWsI8'
   name: 'temp'
@@ -23,9 +20,9 @@ jobs:
         id: 'get_data'
         uses: ./
         with:
-          commands: |
+          sheets: |
             [
-              { "name": "${{ env.name }}", "range": "${{ env.range }}", "name": "${{ env.name }}"}
+              { "id": "${{ env.id }}", "range": "${{ env.range }}", "name": "${{ env.name }}"}
             ]
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
