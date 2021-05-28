@@ -3,27 +3,37 @@ name: Test
 on:
   push:
 env:
+  #sheets:
   id: '1ZbkUf1tAzt_Lhh1G8ezDgyU1AdUnm26xzPYLtdtWsI8'
   name: 'temp'
   range: 'A1:I8'
+    #- id: '1ZbkUf1tAzt_Lhh1G8ezDgyU1AdUnm26xzPYLtdtWsI8'
+
 
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
     name: A job to say hello
     steps:
-      # To use this repository's private action,
-      # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
       - name: Pull GSheet data
-        id: 'get_data'
+        id: 'sheet_to_csv'
         uses: ./
         with:
+          creds: ${{ secrets.GSHEET_CREDENTIALS }}
           sheets: |
             [
-              { "id": "${{ env.id }}", "range": "${{ env.range }}", "name": "${{ env.name }}"}
+              { "id": "${{ env.id }}", "range": "${{ env.range }}", "title": "${{ env.name }}" },
+              { "id": "${{ env.id }}", "title": "${{ env.name }}" }
             ]
+      - name: Print csv
+        id: "print_csv"
+        run: |
+          head -n 2 /tmp/tmp1.csv
+          echo "$FILES" | jq -c '.[]' | while read i; do
+              echo $i
+              head -n 2 $i
+          done
         env:
-          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
-          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
+          FILES: ${{ steps.sheet_to_csv.outputs.results }}

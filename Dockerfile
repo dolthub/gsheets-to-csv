@@ -1,5 +1,5 @@
 # Container image that runs your code
-FROM alpine:3.10
+FROM python:3.9.5-alpine
 
 RUN apk add --no-cache bash curl jq git \
     && curl -L https://github.com/dolthub/dolt/releases/latest/download/install.sh | bash \
@@ -9,8 +9,20 @@ RUN apk add --no-cache bash curl jq git \
     #&& dolt config --global --add user.email bojack@horseman.com \
     #&& dolt config --global --add user.name "Bojack Horseman" \
 
+# Install Poetry
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
+    cd /usr/local/bin && \
+    ln -s /opt/poetry/bin/poetry && \
+    poetry config virtualenvs.create false
+
+COPY pyproject.toml poetry.lock* /usr/src/
+
+WORKDIR /usr/src
+
+RUN poetry install --no-root
+
 # Copies your code file from your action repository to the filesystem path `/` of the container
-COPY entrypoint.sh /entrypoint.sh
+COPY entrypoint.py /usr/src/entrypoint.py
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["python", "/usr/src/entrypoint.py"]
