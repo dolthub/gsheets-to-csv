@@ -19,7 +19,7 @@ jobs:
         run: echo "$(pwd)"
       - name: Pull GSheet data
         id: 'sheet_to_csv'
-        uses: ./
+        uses: dolthub/gsheets-to-csv
         with:
           creds: ${{ secrets.GSHEET_CREDENTIALS }}
           tempdir: ${{github.workspace}}
