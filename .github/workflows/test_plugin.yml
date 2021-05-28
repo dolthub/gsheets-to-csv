@@ -7,8 +7,6 @@ env:
   id: '1ZbkUf1tAzt_Lhh1G8ezDgyU1AdUnm26xzPYLtdtWsI8'
   name: 'temp'
   range: 'A1:I8'
-    #- id: '1ZbkUf1tAzt_Lhh1G8ezDgyU1AdUnm26xzPYLtdtWsI8'
-
 
 jobs:
   hello_world_job:
@@ -30,10 +28,9 @@ jobs:
       - name: Print csv
         id: "print_csv"
         run: |
-          head -n 2 /tmp/tmp1.csv
           echo "$FILES" | jq -c '.[]' | while read i; do
-              echo $i
-              head -n 2 $i
+              eval file=$i
+              echo "$(wc -l $file)"
           done
         env:
           FILES: ${{ steps.sheet_to_csv.outputs.results }}
