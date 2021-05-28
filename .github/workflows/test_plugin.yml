@@ -16,13 +16,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: PWD
-        run: echo "$(pwd)"
+        run: |
+          echo "$(pwd)"
+          echo $HOME
+          echo $GITHUB_WORKSPACE
+          echo ${{github.home}}
+          echo ${{github.workspace}}
       - name: Pull GSheet data
         id: 'sheet_to_csv'
         uses: ./
         with:
           creds: ${{ secrets.GSHEET_CREDENTIALS }}
-          tempdir: ${{env.workspace}}
+          tempdir: ${{ env.HOME }}
           sheets: |
             [
               { "id": "${{ env.id }}", "range": "${{ env.range }}", "title": "${{ env.name }}" }
