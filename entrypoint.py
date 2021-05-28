@@ -41,6 +41,7 @@ def load_sheets_into_csv(sheets, output_dir, creds):
         filename = os.path.join(output_dir, f"tmp{i}.csv")
         write_worksheet_to_csv(data, filename)
         outputs.append(filename)
+        logger.log(f"sheet written to {filename}")
     return outputs
 
 
