@@ -9,7 +9,7 @@ inputs:
   tempdir:
     description: 'Target directory for CSV files'
     required: false
-    default: "${{ github.workspace }}"
+    default: ''
   creds:
     description: 'Service account credentials (JSON)'
     required: true
