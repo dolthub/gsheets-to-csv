@@ -7,7 +7,6 @@ env:
   id: '1ZbkUf1tAzt_Lhh1G8ezDgyU1AdUnm26xzPYLtdtWsI8'
   name: 'temp'
   range: 'A1:I8'
-  workdir: ./tmp
 
 jobs:
   hello_world_job:
@@ -21,7 +20,6 @@ jobs:
         uses: ./
         with:
           creds: ${{ secrets.GSHEET_CREDENTIALS }}
-          tempdir: ${{ env.workdir }}
           sheets: |
             [
               { "id": "${{ env.id }}", "range": "${{ env.range }}", "title": "${{ env.name }}" }
@@ -33,6 +31,5 @@ jobs:
               eval file=$i
               echo "$(wc -l $file)"
           done
-        working-directory: ${{ env.workdir }}
         env:
           FILES: ${{ steps.sheet_to_csv.outputs.results }}

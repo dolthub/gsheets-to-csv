@@ -41,14 +41,15 @@ def load_sheets_into_csv(sheets, output_dir, creds):
         filename = os.path.join(output_dir, f"tmp{i}.csv")
         write_worksheet_to_csv(data, filename)
         outputs.append(filename)
-        logger.log(f"sheet written to {filename}")
+        logger.info(f"sheet written to {filename}")
     return outputs
 
 
 if __name__=="__main__":
     creds = json.loads(os.environ.get("INPUT_CREDS", {}))
     sheets = json.loads(os.environ.get("INPUT_SHEETS", []))
-    output_dir = os.environ.get("INPUT_TEMPDIR") or os.environ.get("GITHUB_WORKSPACE")
+    #output_dir = os.environ.get("INPUT_TEMPDIR") or os.environ.get("GITHUB_WORKSPACE")
+    output_dir = os.path.join(os.getcwd(), "tmp")
 
     outputs = load_sheets_into_csv(
         sheets=sheets,
