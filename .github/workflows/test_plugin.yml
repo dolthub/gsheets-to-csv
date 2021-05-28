@@ -19,7 +19,6 @@ jobs:
       - name: Pull GSheet data
         id: 'sheet_to_csv'
         uses: ./
-        working-directory: ${{ env.workdir }}
         with:
           creds: ${{ secrets.GSHEET_CREDENTIALS }}
           tempdir: ${{ env.workdir }}
