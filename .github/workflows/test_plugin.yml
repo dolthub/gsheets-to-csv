@@ -25,6 +25,8 @@ jobs:
       - name: Pull GSheet data
         id: 'sheet_to_csv'
         uses: ./
+        env:
+          WORKSPACE: ${{ github.workspace}}
         with:
           creds: ${{ secrets.GSHEET_CREDENTIALS }}
           tempdir: ${{ env.HOME }}
