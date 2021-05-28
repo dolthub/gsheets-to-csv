@@ -22,8 +22,7 @@ jobs:
           creds: ${{ secrets.GSHEET_CREDENTIALS }}
           sheets: |
             [
-              { "id": "${{ env.id }}", "range": "${{ env.range }}", "title": "${{ env.name }}" },
-              { "id": "${{ env.id }}", "title": "${{ env.name }}" }
+              { "id": "${{ env.id }}", "range": "${{ env.range }}", "title": "${{ env.name }}" }
             ]
       - name: Print csv
         id: "print_csv"
