@@ -20,6 +20,7 @@ jobs:
         uses: ./
         with:
           creds: ${{ secrets.GSHEET_CREDENTIALS }}
+          tempdir: ${{ env.GITHUB_WORKSPACE }}
           sheets: |
             [
               { "id": "${{ env.id }}", "range": "${{ env.range }}", "title": "${{ env.name }}" }

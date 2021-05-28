@@ -9,6 +9,7 @@ inputs:
   tempdir:
     description: 'Target directory for CSV files'
     required: false
+    defualt: '/github/home/'
   creds:
     description: 'Service account credentials (JSON)'
     required: true
