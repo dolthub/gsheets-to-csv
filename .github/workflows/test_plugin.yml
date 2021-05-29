@@ -29,10 +29,10 @@ jobs:
           WORKSPACE: ${{ github.workspace}}
         with:
           creds: ${{ secrets.GSHEET_CREDENTIALS }}
-          #tempdir: ${{ env.HOME }}
           sheets: |
             [
-              { "id": "${{ env.id }}", "range": "${{ env.range }}", "title": "${{ env.name }}" }
+              { "id": "${{ env.id }}", "range": "${{ env.range }}", "title": "${{ env.name }}" },
+              { "id": "${{ env.id }}" }
             ]
       - name: Print csv
         id: "print_csv"
