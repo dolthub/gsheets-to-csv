@@ -2,11 +2,6 @@ name: Test
 
 on:
   push:
-env:
-  #sheets:
-  id: '1ZbkUf1tAzt_Lhh1G8ezDgyU1AdUnm26xzPYLtdtWsI8'
-  name: 'temp'
-  range: 'A1:I8'
 
 jobs:
   hello_world_job:
@@ -15,32 +10,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: PWD
+      - name: Make csvs dir
+        run: mkdir ./csvs
+      - name: Set some stuff
+        id: set_stuff
         run: |
-          echo "$(pwd)"
-          echo $HOME
-          echo $GITHUB_WORKSPACE
-          echo ${{github.home}}
-          echo ${{github.workspace}}
-      - name: Pull GSheet data
-        id: 'sheet_to_csv'
-        uses: ./
-        env:
-          WORKSPACE: ${{ github.workspace}}
+          echo "::set-output name=sheet-id::1isczfU4EgpWYVbp9FuzqxrNFImmknD4wMPSj4it8uoQ"
+          echo "::set-output name=range-start::A1"
+          echo "::set-output name=range-end::E2"
+          echo "::set-output name=name::temp"
+      - uses: cardinalby/google-api-fetch-token-action@v1
+        id: fetch_token
         with:
-          creds: ${{ secrets.GSHEET_CREDENTIALS }}
-          sheets: |
-            [
-              { "id": "${{ env.id }}", "range": "${{ env.range }}", "title": "${{ env.name }}" },
-              { "id": "${{ env.id }}" }
-            ]
-      - name: Print csv
-        id: "print_csv"
-        run: |
-          echo "$(pwd)"
-          echo "$FILES" | jq -c '.[]' | while read i; do
-              eval file=$i
-              echo "$(wc -l $file)"
-          done
+          clientId: ${{ secrets.G_API_CLIENT_ID }}
+          clientSecret: ${{ secrets.G_API_CLIENT_SECRET }}
+          refreshToken: ${{ secrets.G_API_REFRESH_TOKEN }}
+      - name: Pull GSheet data
+        id: sheet_to_csv
         env:
-          FILES: ${{ steps.sheet_to_csv.outputs.results }}
+          API_KEY: ${{ secrets.G_API_KEY }}
+          TOKEN: ${{ steps.fetch_token.outputs.accessToken }}
+          CSV_DIR: ./csvs
+          SHEETS: '[{"id":"${{ steps.set_stuff.outputs.sheet-id }}","start":"${{ steps.set_stuff.outputs.range-start }}","end":"${{ steps.set_stuff.outputs.range-end }}","name":"${{ steps.set_stuff.outputs.name }}"},{"id":"${{ steps.set_stuff.outputs.sheet-id }}","start":"${{ steps.set_stuff.outputs.range-start }}"},{"id":"${{ steps.set_stuff.outputs.sheet-id }}","start":"${{ steps.set_stuff.outputs.range-start }}","end":"${{ steps.set_stuff.outputs.range-end }}","name":"${{ steps.set_stuff.outputs.name }}"}]'
+        run: ./print-csv.sh "$SHEETS"
+      - name: Print csv
+        working-directory: ./csvs
+        run: |
+          echo "This is one csv:"
+          cat 0.csv
+          echo "This is another:"
+          cat 2.csv
+
