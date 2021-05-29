@@ -12,6 +12,13 @@ jobs:
         uses: actions/checkout@v2
       - name: Make csvs dir
         run: mkdir ./csvs
+      - name: Set some stuff
+        id: set_stuff
+        run: |
+          echo "::set-output name=sheet-id::1isczfU4EgpWYVbp9FuzqxrNFImmknD4wMPSj4it8uoQ"
+          echo "::set-output name=range-start::A1"
+          echo "::set-output name=range-end::E2"
+          echo "::set-output name=name::temp"
       - uses: cardinalby/google-api-fetch-token-action@v1
         id: fetch_token
         with:
@@ -24,7 +31,7 @@ jobs:
           API_KEY: ${{ secrets.G_API_KEY }}
           TOKEN: ${{ steps.fetch_token.outputs.accessToken }}
           CSV_DIR: ./csvs
-          SHEETS: '[{"id":"1isczfU4EgpWYVbp9FuzqxrNFImmknD4wMPSj4it8uoQ","start":"A1","end":"E2","name":"temp"},{"id":"1isczfU4EgpWYVbp9FuzqxrNFImmknD4wMPSj4it8uoQ","start":"A1"},{"id":"1isczfU4EgpWYVbp9FuzqxrNFImmknD4wMPSj4it8uoQ","start":"A1","end":"E2","name":"temp"}]'
+          SHEETS: '[{"id":"${{ steps.set_stuff.outputs.sheet-id }}","start":"${{ steps.set_stuff.outputs.range-start }}","end":"${{ steps.set_stuff.outputs.range-end }}","name":"${{ steps.set_stuff.outputs.name }}"},{"id":"${{ steps.set_stuff.outputs.sheet-id }}","start":"${{ steps.set_stuff.outputs.range-start }}"},{"id":"${{ steps.set_stuff.outputs.sheet-id }}","start":"${{ steps.set_stuff.outputs.range-start }}","end":"${{ steps.set_stuff.outputs.range-end }}","name":"${{ steps.set_stuff.outputs.name }}"}]'
         run: ./print-csv.sh "$SHEETS"
       - name: Print csv
         working-directory: ./csvs
