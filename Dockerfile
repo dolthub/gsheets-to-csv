@@ -13,12 +13,18 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
     ln -s /opt/poetry/bin/poetry && \
     poetry config virtualenvs.create false
 
-COPY pyproject.toml poetry.lock* ./
+COPY pyproject.toml poetry.lock* gsheets_to_csv /usr/src/
 
-RUN poetry install --no-root
+WORKDIR /usr/src
+
+RUN poetry install --no-dev --no-root
+
+COPY gsheets_to_csv /usr/src/gsheets_to_csv
+
+RUN poetry install --no-dev
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
-COPY entrypoint.py /usr/src/entrypoint.py
+COPY entrypoint.py /usr/src
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`
-ENTRYPOINT ["python", "/usr/src/entrypoint.py"]
+ENTRYPOINT ["python", "entrypoint.py"]
