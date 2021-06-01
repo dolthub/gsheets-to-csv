@@ -27,4 +27,4 @@ RUN poetry install --no-dev
 COPY entrypoint.py /usr/src
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`
-ENTRYPOINT ["python", "entrypoint.py"]
+ENTRYPOINT ["python", "/usr/src/entrypoint.py"]

@@ -2,6 +2,9 @@ name: Release Test
 
 on:
   push:
+    branches:
+      - master
+  pull_request:
 env:
   id: '1ZbkUf1tAzt_Lhh1G8ezDgyU1AdUnm26xzPYLtdtWsI8'
   name: 'temp'
@@ -30,8 +33,8 @@ jobs:
           expected=(12, 13500)
           for i in {0..1}; do
               echo "$FILES" | jq -c ".[${i}]" | while read j; do
-                  eval file=$j
-                  linecount="$(wc -l $file | awk '{print $1}')"
+                  eval file="${j}"
+                  linecount="$(wc -l "${file}" | awk '{print $1}')"
                   if [ "${linecount}" -ne "${expected[${i}]}" ]; then
                       echo "wc expected: ${expected[${i}]}; found ${linecount}; file ${file}"
                       exit 1
