@@ -3,6 +3,7 @@ name = "gsheets-to-csv"
 version = "0.1.0"
 description = ""
 authors = ["Max Hoffman <max@dolthub.com>"]
+include = ["entrypoint.py"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
