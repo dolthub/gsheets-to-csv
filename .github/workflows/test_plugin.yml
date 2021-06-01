@@ -27,22 +27,17 @@ jobs:
       - name: Print csv
         id: "print_csv"
         run: |
-          linecounts=()
-          echo "$FILES" | jq -c '.[]' | while read i; do
-              eval file=$i
-              newline="$(wc -l $file | awk '{print $1}')"
-              echo "$newline"
-              linecounts["${#linecounts[@]}"]="${newline}"
-              scho "$(wc -l $file)"
+          expected=(12, 13500)
+          for i in {0..1}; do
+              echo "$FILES" | jq -c ".[${i}]" | while read j; do
+                  eval file=$j
+                  linecount="$(wc -l $file | awk '{print $1}')"
+                  if [ "${linecount}" -ne "${expected[${i}]}" ]; then
+                      echo "wc expected: ${expected[${i}]}; found ${linecount}; file ${file}"
+                      exit 1
+                  fi
+                  echo "succeed: ${linecount} ${file}"
+              done
           done
-
-          echo $linecounts
-          if [ "${linecounts[0]}" != '12' ]; then
-              echo "First csv not 12 lines: ${linecounts[1]}"
-              exit 1
-          elif [ "${linecounts[1]}" != '13500' ]; then
-              echo "Second csv not 13500 lines: ${linecounts[2]}"
-             exit 1
-          fi
         env:
           FILES: ${{ steps.sheet_to_csv.outputs.results }}
