@@ -27,7 +27,6 @@ jobs:
       - name: Print csv
         id: "print_csv"
         run: |
-          echo "$(pwd)"
           echo "$FILES" | jq -c '.[]' | while read i; do
               eval file=$i
               echo "$(wc -l $file)"
