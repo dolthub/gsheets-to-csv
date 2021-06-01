@@ -1,4 +1,4 @@
-name: Action Test
+name: Release Test
 
 on:
   push:
