@@ -9,7 +9,7 @@ on:
     - cron: '0 20 * * *' # run at noon PT
 env:
   package_name: 'gsheets_to_csv'
-  cov_version: '3.8'
+  cov_version: '3.9'
 
 jobs:
   # Run test suite across all major OS types
@@ -47,7 +47,7 @@ jobs:
         run: poetry run make fmt
       - name: Linting
         run: poetry run make lint
-      - name: Execute pytest
+       name: Execute pytest
         run: |
           poetry run pytest . --cov=${{ env.package_name }} --cov-report=term --cov-report xml
       - uses: codecov/codecov-action@v1
