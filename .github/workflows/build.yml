@@ -1,4 +1,4 @@
-name: Gsheets-to-CSV Tests
+name: Pytest
 
 on:
   push:
@@ -48,13 +48,11 @@ jobs:
       - name: Linting
         run: poetry run make lint
       - name: Execute pytest
-        run: |
-          poetry run pytest . --cov=${{ env.package_name }} --cov-report=term --cov-report xml
+        run: poetry run make test
       - uses: codecov/codecov-action@v1
-        if: ${{ matrix.python-version }} == $${{ env.cov_version }}
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          #files: ./coverage-${{ runner.os }}-${{ matrix.python-version }}.xml
+          files: ./coverage.xml
           name: codecov-umbrella # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
