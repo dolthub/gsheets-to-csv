@@ -1,9 +1,8 @@
-name: Test
+name: Action Test
 
 on:
   push:
 env:
-  #sheets:
   id: '1ZbkUf1tAzt_Lhh1G8ezDgyU1AdUnm26xzPYLtdtWsI8'
   name: 'temp'
   range: 'A1:I8'
@@ -15,18 +14,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: PWD
-        run: |
-          echo "$(pwd)"
-          echo $HOME
-          echo $GITHUB_WORKSPACE
-          echo ${{github.home}}
-          echo ${{github.workspace}}
       - name: Pull GSheet data
         id: 'sheet_to_csv'
         uses: ./
-        env:
-          WORKSPACE: ${{ github.workspace}}
         with:
           creds: ${{ secrets.GSHEET_CREDENTIALS }}
           sheets: |
@@ -37,10 +27,17 @@ jobs:
       - name: Print csv
         id: "print_csv"
         run: |
-          echo "$(pwd)"
-          echo "$FILES" | jq -c '.[]' | while read i; do
-              eval file=$i
-              echo "$(wc -l $file)"
+          expected=(12, 13500)
+          for i in {0..1}; do
+              echo "$FILES" | jq -c ".[${i}]" | while read j; do
+                  eval file=$j
+                  linecount="$(wc -l $file | awk '{print $1}')"
+                  if [ "${linecount}" -ne "${expected[${i}]}" ]; then
+                      echo "wc expected: ${expected[${i}]}; found ${linecount}; file ${file}"
+                      exit 1
+                  fi
+                  echo "succeed: ${linecount} ${file}"
+              done
           done
         env:
           FILES: ${{ steps.sheet_to_csv.outputs.results }}
