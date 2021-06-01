@@ -27,9 +27,22 @@ jobs:
       - name: Print csv
         id: "print_csv"
         run: |
+          linecounts=()
           echo "$FILES" | jq -c '.[]' | while read i; do
               eval file=$i
-              echo "$(wc -l $file)"
+              newline="$(wc -l $file | awk '{print $1}')"
+              echo "$newline"
+              linecounts["${#linecounts[@]}"]="${newline}"
+              scho "$(wc -l $file)"
           done
+
+          echo $linecounts
+          if [ "${linecounts[0]}" != '12' ]; then
+              echo "First csv not 12 lines: ${linecounts[1]}"
+              exit 1
+          elif [ "${linecounts[1]}" != '13500' ]; then
+              echo "Second csv not 13500 lines: ${linecounts[2]}"
+             exit 1
+          fi
         env:
           FILES: ${{ steps.sheet_to_csv.outputs.results }}
