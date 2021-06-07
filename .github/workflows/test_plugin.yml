@@ -19,6 +19,7 @@ jobs:
         uses: ./
         with:
           creds: ${{ secrets.GSHEET_CREDENTIALS }}
+          output_json: True
           sheets: |
             [
               { "id": "${{ env.id }}", "range": "${{ env.range }}", "title": "${{ env.name }}" },
@@ -27,12 +28,12 @@ jobs:
       - name: Print csv
         id: "print_csv"
         run: |
-          expected=(12, 13500)
+          expected=(12 13500)
           for i in {0..1}; do
               echo "$FILES" | jq -c ".[${i}]" | while read j; do
                   eval file="${j}"
                   linecount="$(wc -l "${file}" | awk '{print $1}')"
-                  if [ "${linecount}" -ne "${expected[${i}]}" ]; then
+                  if [ $linecount -ne "${expected[${i}]}" ]; then
                       echo "wc expected: ${expected[${i}]}; found ${linecount}; file ${file}"
                       exit 1
                   fi

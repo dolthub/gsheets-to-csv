@@ -14,6 +14,10 @@ inputs:
     description: 'Service account credentials (JSON)'
     required: true
     default: ''
+  output_json:
+    description: 'Output is space separated (default) or json encoded array of file names'
+    required: false
+    default: false
 runs:
   using: 'docker'
   image: 'Dockerfile'

@@ -14,4 +14,11 @@ if __name__ == "__main__":
         creds=creds,
     )
 
-    print(f"::set-output name=results::{json.dumps(outputs)}")
+    json_results = os.environ.get("INPUT_OUTPUT_JSON")
+    print("JSON_RESULTS", json_results)
+    if json_results in {"true", "True"}:
+        results = json.dumps(outputs)
+    else:
+        results = " ".join(outputs)
+
+    print(f"::set-output name=results::{results}")

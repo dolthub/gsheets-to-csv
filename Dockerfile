@@ -3,15 +3,13 @@ FROM python:3.9.5-alpine
 
 RUN apk add --no-cache bash curl jq git \
     && curl -L https://github.com/dolthub/dolt/releases/latest/download/install.sh | bash \
-    && mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 \
-    && dolt config --global --add metrics.host eventsapi.awsdev.ld-corp.com \
-    && dolt config --global --add metrics.port 443
+    && mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
 
 # Install Poetry
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
-    cd /usr/local/bin && \
-    ln -s /opt/poetry/bin/poetry && \
-    poetry config virtualenvs.create false
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python \
+    && cd /usr/local/bin \
+    && ln -s /opt/poetry/bin/poetry \
+    && poetry config virtualenvs.create false
 
 COPY pyproject.toml poetry.lock* gsheets_to_csv /usr/src/
 
