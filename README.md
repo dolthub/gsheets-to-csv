@@ -1,12 +1,11 @@
 # Gsheets to CSV
 
-This is a GitHub Action plugin that reads google sheets into CSV
+This is a GitHub Action plugin that reads Google sheets into CSV
 files.
 
-In the example below we first read Google Sheets given
-specific ids and tab names
-into CSV's, and then count the number of lines in each
-file.
+## Example Usage
+
+### Bash Array Result
 
 ```yml
 name: GSheets Test
@@ -19,18 +18,15 @@ env:
   range: 'A1:I8'
 
 jobs:
-  hello_world_job:
+  test_job:
     runs-on: ubuntu-latest
     name: A job to say hello
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
       - name: Pull GSheet data
         id: 'sheet_to_csv'
         uses: gsheets-to-csv@1
         with:
           creds: ${{ secrets.GSHEET_CREDENTIALS }}
-          json_output: True
           sheets: |
             [
               { "id": "${{ env.id }}", "range": "${{ env.range }}", "title": "${{ env.name }}" },
@@ -38,13 +34,59 @@ jobs:
             ]
       - name: Print CSV
         id: "print_csv"
+        env:
+          FILES: ${{ steps.sheet_to_csv.outputs.results }}
+        run: |
+          file_list=($FILES)
+          for file in "${file_list[@]}"; do
+              echo "$(wc -l $file)"
+          done
+```
+
+This sample output from the "Print CSV" step is:
+
+```bash
+12 Test/tmp0.csv
+13500 Test/tmp1.csv
+```
+
+### JSON Result
+
+```yml
+name: GSheets Test
+
+on:
+  push:
+env:
+  id: '1ZbkUf1tAzt_Lhh1G8ezDgyU1AdUnm26xzPYLtdtWsI8'
+  name: 'temp'
+  range: 'A1:I8'
+
+jobs:
+  test_job:
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
+      - name: Pull GSheet data
+        id: 'sheet_to_csv'
+        uses: gsheets-to-csv@1
+        with:
+          creds: ${{ secrets.GSHEET_CREDENTIALS }}
+          json_output: true
+          sheets: |
+            [
+              { "id": "${{ env.id }}", "range": "${{ env.range }}", "title": "${{ env.name }}" },
+              { "id": "${{ env.id }}" }
+            ]
+      - name: Print CSV
+        id: "print_csv"
+        env:
+          FILES: ${{ steps.sheet_to_csv.outputs.results }}
         run: |
           echo "$FILES" | jq -c '.[]' | while read i; do
               eval file=$i
               echo "$(wc -l $file)"
           done
-        env:
-          FILES: ${{ steps.sheet_to_csv.outputs.results }}
 ```
 
 This sample output from the "Print CSV" step is:
@@ -106,8 +148,10 @@ tmp1.csv
 ```
 
 If you have not checked out a GitHub directory, a generice `run` step
-will have the same filepaths.
+will still find files in `/github/workspace`.
 
 If you have checked out a GitHub directory, `{{ github.workspace }}`
 and our files will now be `/home/runner/work/gsheets-to-csv/gsheets-to-csv` in a
-generic `run` step.
+generic `run` step. Relative paths can be used to bridge this
+discrepency. Containerized tasks will also mount files back to
+`/github/workspace`.
