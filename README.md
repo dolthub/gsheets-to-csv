@@ -151,7 +151,7 @@ If you have not checked out a GitHub directory, a generice `run` step
 will still find files in `/github/workspace`.
 
 If you have checked out a GitHub directory, `{{ github.workspace }}`
-and our files will now be `/home/runner/work/gsheets-to-csv/gsheets-to-csv` in a
+and our files will now reside in `/home/runner/work/gsheets-to-csv/gsheets-to-csv` during a
 generic `run` step. Relative paths can be used to bridge this
-discrepency. Containerized tasks will also mount files back to
-`/github/workspace`.
+discrepency. Containerized tasks will mount files back to
+`/github/workspace` even after a GitHub checkout.
