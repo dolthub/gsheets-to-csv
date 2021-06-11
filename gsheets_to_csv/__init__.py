@@ -23,7 +23,7 @@ def load_sheets_into_csv(sheets, output_dir, creds):
 
     for i, sh in enumerate(sheets):
         logger.info(f"downloading sheet: {sh}")
-        print("downloadnig sheet: {sh}")
+        print(f"downloading sheet: {sh}")
         if "id" not in sh:
             logger.warning("Id required to lookup sheet")
             continue
