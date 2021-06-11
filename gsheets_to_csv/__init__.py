@@ -22,16 +22,21 @@ def load_sheets_into_csv(sheets, output_dir, creds):
     outputs = []
 
     for i, sh in enumerate(sheets):
+        logger.info(f"downloading sheet: {sh}")
+        print("downloadnig sheet: {sh}")
         if "id" not in sh:
             logger.warning("Id required to lookup sheet")
             continue
         sheet = gc.open_by_key(key=sh["id"])
 
-        if "title" in sh:
-            ws = sheet.worksheet(title=sh["title"])
-        else:
-            logger.info("Sheet title not specified; selecting first")
-            ws = sheet.worksheets()[0]
+        try:
+            if "title" in sh:
+                ws = sheet.worksheet(title=sh["title"])
+            else:
+                logger.info("Sheet title not specified; selecting first")
+                ws = sheet.worksheets()[0]
+        except gspread.exceptions.APIError:
+            raise Exception(f"failed to download sheet {sh}")
 
         if "range" in sh:
             data = ws.get(sh["range"])
