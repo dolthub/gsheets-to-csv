@@ -4,8 +4,8 @@ import os
 from gsheets_to_csv import load_sheets_into_csv
 
 if __name__ == "__main__":
-    creds = json.loads(os.environ.get("INPUT_CREDS", ""))
-    sheets = json.loads(os.environ.get("INPUT_SHEETS", ""))
+    creds = json.loads(os.environ.get("INPUT_CREDS", "{}"))
+    sheets = json.loads(os.environ.get("INPUT_SHEETS", "{}"))
     output_dir = os.environ.get("INPUT_TEMPDIR")
 
     outputs = load_sheets_into_csv(
