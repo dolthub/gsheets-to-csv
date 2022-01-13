@@ -42,3 +42,20 @@ jobs:
           done
         env:
           FILES: ${{ steps.sheet_to_csv.outputs.results }}
+      - name: Check permissions
+        id: "check_perm"
+        run: |
+          expected=(777 777)
+          for i in {0..1}; do
+              echo "$FILES" | jq -c ".[${i}]" | while read j; do
+                  eval file="${j}"
+                  perm="$(stat -c '%a')"
+                  if [ $perm -ne "${expected[${i}]}" ]; then
+                      echo "wc expected: ${expected[${i}]}; found ${linecount}; file ${file}"
+                      exit 1
+                  fi
+                  echo "succeed: ${perm} ${file}"
+              done
+          done
+        env:
+          FILES: ${{ steps.sheet_to_csv.outputs.results }}
