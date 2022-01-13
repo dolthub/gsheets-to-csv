@@ -49,7 +49,7 @@ jobs:
           for i in {0..1}; do
               echo "$FILES" | jq -c ".[${i}]" | while read j; do
                   eval file="${j}"
-                  perm="$(stat -c '%a')"
+                  perm="$(stat -c '%a' "${file}")"
                   if [ $perm -ne "${expected[${i}]}" ]; then
                       echo "wc expected: ${expected[${i}]}; found ${linecount}; file ${file}"
                       exit 1
