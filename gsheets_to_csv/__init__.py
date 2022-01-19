@@ -12,6 +12,7 @@ def write_worksheet_to_csv(data, file):
     with open(file, "w", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
         writer.writerows(data)
+    os.chmod(file, 0o777)
 
 
 def load_sheets_into_csv(sheets, output_dir, creds):
